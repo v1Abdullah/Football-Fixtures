@@ -1,129 +1,55 @@
 name: Daily Football Fixtures
 
-
-
 on:
-
   schedule:
-  
     # Every day at 06:00 Saudi Arabia time (03:00 UTC)
-    
     - cron: "0 3 * * *"
-    
-
 
   workflow_dispatch:
-  
-
+    inputs:
+      test_discord:
+        description: Send a one-time Discord connection test message
+        required: false
+        type: boolean
+        default: false
 
 permissions:
-
   contents: write
-  
-
 
 concurrency:
-
   group: daily-football-fixtures
-  
   cancel-in-progress: false
-  
-
 
 jobs:
-
   send-fixtures:
-  
     runs-on: ubuntu-latest
-    
-
 
     steps:
-    
       - name: Checkout repository
-      
         uses: actions/checkout@v4
-        
         with:
-        
           ref: ${{ github.ref_name }}
-          
-
 
       - name: Set up Python
-      
         uses: actions/setup-python@v5
-        
         with:
-        
           python-version: "3.12"
-          
-
 
       - name: Install dependencies
-      
         run: pip install requests
-        
-
 
       - name: Check matches and send Discord announcements
-      
         env:
-        
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          
+          TEST_DISCORD_MESSAGE: ${{ inputs.test_discord }}
         run: python main.py
-        
-
 
       - name: Save sent match IDs
-      
         run: |
-        
           git config user.name "github-actions[bot]"
-          
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
           git add sent_fixtures.json
-          
           if ! git diff --cached --quiet; then
-          
             git commit -m "Update announced football fixtures"
-            
             git push
-            
           fi
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
