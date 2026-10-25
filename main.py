@@ -183,7 +183,6 @@ def send_discord_message(message, competition):
     response = SESSION.post(
         webhook_url,
         json={
-            "username": "مواعيد المباريات ⚽",
             "content": message,
             "allowed_mentions": {"parse": []},
         },
