@@ -160,7 +160,8 @@ def is_relevant_match(match, competition):
 
 
 def format_match(match):
-    kickoff_time = match["kickoff"].strftime("%H:%M")
+    kickoff_time = match["kickoff"].strftime("%I:%M %p").lstrip("0")
+    kickoff_time = kickoff_time.replace("AM", "صباحًا").replace("PM", "مساءً")
     return (
         f"⚽ **{match['home']} × {match['away']}**\n"
         f"🕒 {kickoff_time} بتوقيت السعودية"
@@ -202,7 +203,7 @@ def main():
     print(f"Checking ESPN fixtures for Saudi date {TODAY.isoformat()}")
     sent_ids = load_sent_fixtures()
     announced_ids = set()
-    sections = []
+    messages = []
 
     for competition in COMPETITIONS:
         print(f"Checking {competition['name']} ({competition['slug']})...")
@@ -226,17 +227,19 @@ def main():
             announced_ids.add(match["id"])
 
         if lines:
-            sections.append(f"{competition['emoji']} **{competition['name']}**\n" + "\n".join(lines))
+            header = (
+                f"{competition['emoji']} **{competition['name']} | مباريات اليوم "
+                f"{TODAY.strftime('%Y-%m-%d')}**\n"
+                "🇸🇦 الأوقات بتوقيت السعودية"
+            )
+            # Keep each competition in its own Discord message. Blank lines
+            # between fixtures make long match lists easier to scan.
+            section = "\n\n".join(lines)
+            messages.extend(split_discord_messages(header, [section]))
 
-    if not sections:
+    if not messages:
         print("No new relevant upcoming fixtures found today.")
         return
-
-    header = (
-        f"⚽ **مباريات اليوم | {TODAY.strftime('%Y-%m-%d')}**\n"
-        "🇸🇦 جميع الأوقات بتوقيت السعودية"
-    )
-    messages = split_discord_messages(header, sections)
 
     # Store match IDs only after every message has been delivered successfully.
     for message in messages:
