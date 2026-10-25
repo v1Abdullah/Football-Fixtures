@@ -15,8 +15,8 @@ Kickoff times are converted to `Asia/Riyadh` and displayed in 12-hour format wit
 ## GitHub setup
 
 1. In the repository, open **Settings → Secrets and variables → Actions**.
-2. Add a repository secret named `DISCORD_WEBHOOK_URL` with the Discord channel webhook URL.
-3. Ensure GitHub Actions is enabled, then run **Daily Football Fixtures** manually once to verify setup.
+2. Add these repository secrets, each with the webhook URL for its competition: `DISCORD_WEBHOOK_SAUDI`, `DISCORD_WEBHOOK_EPL`, `DISCORD_WEBHOOK_LALIGA`, `DISCORD_WEBHOOK_LIGUE1`, `DISCORD_WEBHOOK_ASIAN_CL`, and `DISCORD_WEBHOOK_UCL`.
+3. Ensure GitHub Actions is enabled. To verify all webhook destinations, run **Daily Football Fixtures** manually and enable **Send a one-time Discord connection test message**; this sends one test message to each of the six webhooks.
 
 No API-Football account or API key is required. Do not add the webhook URL to source code or commit it.
 
