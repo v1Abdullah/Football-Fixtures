@@ -12,8 +12,15 @@ import requests
 BASE_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer"
 TIMEZONE = ZoneInfo("Asia/Riyadh")
 TODAY = datetime.now(TIMEZONE).date()
-WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "").strip()
 STATE_FILE = Path("sent_fixtures.json")
+WEBHOOK_SECRETS = {
+    "ksa.1": "DISCORD_WEBHOOK_SAUDI",
+    "eng.1": "DISCORD_WEBHOOK_EPL",
+    "esp.1": "DISCORD_WEBHOOK_LALIGA",
+    "fra.1": "DISCORD_WEBHOOK_LIGUE1",
+    "afc.champions": "DISCORD_WEBHOOK_ASIAN_CL",
+    "uefa.champions": "DISCORD_WEBHOOK_UCL",
+}
 
 # Saudi Pro League, Premier League, La Liga, Ligue 1, and continental cups.
 # Team filters apply only to the Saudi, Spanish, French, and continental
@@ -28,7 +35,7 @@ COMPETITIONS = [
     {
         "slug": "eng.1",
         "name": "الدوري الإنجليزي الممتاز",
-        "emoji": "🏴",
+        "emoji": "🏴\U000e0067\U000e0062\U000e0065\U000e006e\U000e0067\U000e007f",
         "teams": None,
     },
     {
@@ -168,11 +175,13 @@ def format_match(match):
     )
 
 
-def send_discord_message(message):
-    if not WEBHOOK_URL:
-        raise RuntimeError("Missing DISCORD_WEBHOOK_URL secret in GitHub Actions settings.")
+def send_discord_message(message, competition):
+    secret_name = WEBHOOK_SECRETS[competition["slug"]]
+    webhook_url = os.environ.get(secret_name, "").strip()
+    if not webhook_url:
+        raise RuntimeError(f"Missing {secret_name} secret in GitHub Actions settings.")
     response = SESSION.post(
-        WEBHOOK_URL,
+        webhook_url,
         json={
             "username": "مواعيد المباريات ⚽",
             "content": message,
@@ -229,13 +238,15 @@ def main():
         if lines:
             header = (
                 f"{competition['emoji']} **{competition['name']} | مباريات اليوم "
-                f"{TODAY.strftime('%Y-%m-%d')}**\n"
-                "🇸🇦 الأوقات بتوقيت السعودية"
+                f"{TODAY.strftime('%Y-%m-%d')}**"
             )
             # Keep each competition in its own Discord message. Blank lines
             # between fixtures make long match lists easier to scan.
             section = "\n\n".join(lines)
-            messages.extend(split_discord_messages(header, [section]))
+            messages.extend(
+                (competition, message)
+                for message in split_discord_messages(header, [section])
+            )
 
     test_mode = os.environ.get("TEST_DISCORD_MESSAGE", "").strip().lower() == "true"
     if not messages and not test_mode:
@@ -243,16 +254,18 @@ def main():
         return
 
     # Store match IDs only after every message has been delivered successfully.
-    for message in messages:
-        send_discord_message(message)
+    for competition, message in messages:
+        send_discord_message(message, competition)
     if test_mode:
         now = datetime.now(TIMEZONE).strftime("%I:%M %p").lstrip("0")
         now = now.replace("AM", "صباحًا").replace("PM", "مساءً")
-        send_discord_message(
-            "✅ **اختبار اتصال بوت المباريات**\n"
-            "تم تشغيل GitHub Actions وإرسال هذه الرسالة التجريبية بنجاح.\n"
-            f"🕒 {now} بتوقيت السعودية"
-        )
+        for competition in COMPETITIONS:
+            send_discord_message(
+                f"✅ **اختبار اتصال {competition['name']}**\n"
+                "تم تشغيل GitHub Actions وإرسال هذه الرسالة التجريبية بنجاح.\n"
+                f"🕒 {now} بتوقيت السعودية",
+                competition,
+            )
     save_sent_fixtures(sent_ids | announced_ids)
     print(f"Successfully announced {len(announced_ids)} fixtures.")
 
