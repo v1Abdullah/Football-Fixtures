@@ -237,13 +237,22 @@ def main():
             section = "\n\n".join(lines)
             messages.extend(split_discord_messages(header, [section]))
 
-    if not messages:
+    test_mode = os.environ.get("TEST_DISCORD_MESSAGE", "").strip().lower() == "true"
+    if not messages and not test_mode:
         print("No new relevant upcoming fixtures found today.")
         return
 
     # Store match IDs only after every message has been delivered successfully.
     for message in messages:
         send_discord_message(message)
+    if test_mode:
+        now = datetime.now(TIMEZONE).strftime("%I:%M %p").lstrip("0")
+        now = now.replace("AM", "صباحًا").replace("PM", "مساءً")
+        send_discord_message(
+            "✅ **اختبار اتصال بوت المباريات**\n"
+            "تم تشغيل GitHub Actions وإرسال هذه الرسالة التجريبية بنجاح.\n"
+            f"🕒 {now} بتوقيت السعودية"
+        )
     save_sent_fixtures(sent_ids | announced_ids)
     print(f"Successfully announced {len(announced_ids)} fixtures.")
 
