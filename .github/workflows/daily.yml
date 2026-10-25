@@ -40,7 +40,12 @@ jobs:
 
       - name: Check matches and send Discord announcements
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_WEBHOOK_SAUDI: ${{ secrets.DISCORD_WEBHOOK_SAUDI }}
+          DISCORD_WEBHOOK_EPL: ${{ secrets.DISCORD_WEBHOOK_EPL }}
+          DISCORD_WEBHOOK_LALIGA: ${{ secrets.DISCORD_WEBHOOK_LALIGA }}
+          DISCORD_WEBHOOK_LIGUE1: ${{ secrets.DISCORD_WEBHOOK_LIGUE1 }}
+          DISCORD_WEBHOOK_ASIAN_CL: ${{ secrets.DISCORD_WEBHOOK_ASIAN_CL }}
+          DISCORD_WEBHOOK_UCL: ${{ secrets.DISCORD_WEBHOOK_UCL }}
           TEST_DISCORD_MESSAGE: ${{ inputs.test_discord }}
         run: python main.py
 
