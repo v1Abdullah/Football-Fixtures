@@ -4,6 +4,7 @@ Fetches same-day football fixtures from ESPN's publicly accessible soccer endpoi
 
 ## Competitions tracked
 
+
 - Saudi Pro League: Al Hilal, Al Nassr, Al Ittihad, Al Ahli, and Al Qadsiah.
 - English Premier League: all matches.
 - La Liga: Barcelona, Real Madrid, and Atlético Madrid.
