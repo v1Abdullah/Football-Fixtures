@@ -4,7 +4,6 @@ Fetches same-day football fixtures from ESPN's publicly accessible soccer endpoi
 
 ## Competitions tracked
 
-
 - Saudi Pro League: Al Hilal, Al Nassr, Al Ittihad, Al Ahli, and Al Qadsiah.
 - English Premier League: all matches.
 - La Liga: Barcelona, Real Madrid, and Atlético Madrid.
@@ -24,3 +23,4 @@ No API-Football account or API key is required. Do not add the webhook URL to so
 ## Important data-source note
 
 The ESPN soccer endpoints used by this project are publicly accessible but are not an officially supported public API with a published service-level guarantee. ESPN may change the endpoints or response format without notice. GitHub Actions scheduled runs can also start later than the exact scheduled minute. Check the Actions run log if an announcement is missing.
+
