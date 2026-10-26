@@ -3,7 +3,7 @@ name: Daily Football Fixtures
 on:
   schedule:
     # Every day at 08:55 Saudi Arabia time (05:55 UTC)
-    - cron: "55 5 * * *"
+    - cron: "57 5 * * *"
 
   workflow_dispatch:
     inputs:
