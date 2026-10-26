@@ -2,8 +2,8 @@ name: Daily Football Fixtures
 
 on:
   schedule:
-    # Every day at 06:00 Saudi Arabia time (03:00 UTC)
-    - cron: "0 3 * * *"
+    # Every day at 06:17 Saudi Arabia time (03:17 UTC)
+    - cron: "17 3 * * *"
 
   workflow_dispatch:
     inputs:
