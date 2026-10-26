@@ -10,7 +10,7 @@ Fetches same-day football fixtures from ESPN's publicly accessible soccer endpoi
 - Ligue 1: Lens.
 - AFC Champions League Elite and UEFA Champions League: matches involving the Saudi, Spanish, and French clubs listed above, when those clubs participate.
 
-Kickoff times are converted to `Asia/Riyadh` and displayed in 12-hour format with Arabic AM/PM labels. Each competition is sent in its own Discord message, with a blank line between fixtures. The workflow runs daily at 08:17 Saudi time (05:17 UTC) and can also be started manually from the Actions tab. For a one-time webhook check, manually run the workflow with **Send a one-time Discord connection test message** enabled. A fixture ID history in `sent_fixtures.json` prevents repeat announcements across runs.
+Kickoff times are converted to `Asia/Riyadh` and displayed in 12-hour format with Arabic AM/PM labels. Each competition is sent in its own Discord message, with a blank line between fixtures. The workflow runs daily at 08:55 Saudi time (05:55 UTC) and can also be started manually from the Actions tab. For a one-time webhook check, manually run the workflow with **Send a one-time Discord connection test message** enabled. A fixture ID history in `sent_fixtures.json` prevents repeat announcements across runs.
 
 ## GitHub setup
 
@@ -23,4 +23,3 @@ No API-Football account or API key is required. Do not add the webhook URL to so
 ## Important data-source note
 
 The ESPN soccer endpoints used by this project are publicly accessible but are not an officially supported public API with a published service-level guarantee. ESPN may change the endpoints or response format without notice. GitHub Actions scheduled runs can also start later than the exact scheduled minute. Check the Actions run log if an announcement is missing.
-
